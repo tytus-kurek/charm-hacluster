@@ -381,11 +381,14 @@ def ha_relation_changed():
 
         log('Configuring Locations: %s' % locations, level=DEBUG)
         for loc_name, loc_params in locations.iteritems():
-            if not pcmk.crm_opt_exists(loc_name):
-                cmd = 'crm -w -F configure location %s %s' % (loc_name,
-                                                              loc_params)
-                pcmk.commit(cmd)
-                log('%s' % cmd, level=DEBUG)
+            if not pcmk.crm_opt_exists(loc_name, loc_params):
+                cmd1 = 'crm configure delete %s' % (loc_name)
+                cmd2 = 'crm -w -F configure location %s %s' % (loc_name,
+                                                               loc_params)
+                pcmk.commit(cmd1)
+                log('%s' % cmd1, level=DEBUG)
+                pcmk.commit(cmd2)
+                log('%s' % cmd2, level=DEBUG)
 
         for res_name, res_type in resources.iteritems():
             if len(init_services) != 0 and res_name in init_services:
