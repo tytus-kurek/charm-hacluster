@@ -80,10 +80,15 @@ def online(node=None):
     commit(cmd)
 
 
-def crm_opt_exists(opt_name, opt_param=''):
+def crm_opt_exists(opt_name, opt_params=''):
     output = commands.getstatusoutput("crm configure show")[1]
-    if opt_name and opt_param in output:
-        return True
+    if not opt_params:
+        if opt_name in output:
+            return True
+    else:
+        both = opt_name + opt_params
+        if both in output:
+            return True
 
     return False
 
